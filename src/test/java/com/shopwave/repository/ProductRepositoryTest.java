@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,34 +25,34 @@ public class ProductRepositoryTest {
 
     @Test
     void findByNameContainingIgnoreCaseShouldReturnCorrectResults() {
-        Category category = categoryRepository.save(Category.builder()
+        Category category = Objects.requireNonNull(categoryRepository.save(Category.builder()
                 .name("Electronics")
                 .description("Electronic items")
-                .build());
+                .build()));
 
-        productRepository.save(Product.builder()
+        productRepository.save(Objects.requireNonNull(Product.builder()
                 .name("Laptop")
                 .description("Lightweight laptop")
                 .price(new BigDecimal("1200.00"))
                 .stock(8)
                 .category(category)
-                .build());
+                .build()));
 
-        productRepository.save(Product.builder()
+        productRepository.save(Objects.requireNonNull(Product.builder()
                 .name("Phone")
                 .description("Smart phone")
                 .price(new BigDecimal("800.00"))
                 .stock(15)
                 .category(category)
-                .build());
+                .build()));
 
-        productRepository.save(Product.builder()
+        productRepository.save(Objects.requireNonNull(Product.builder()
                 .name("Desk")
                 .description("Wooden desk")
                 .price(new BigDecimal("300.00"))
                 .stock(4)
                 .category(category)
-                .build());
+                .build()));
 
         List<Product> results = productRepository.findByNameContainingIgnoreCase("pho");
 

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,26 +30,30 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public ProductDTO createProduct(CreateProductRequest request) {
-        Product product = productMapper.toEntity(
+        Long categoryId = Objects.requireNonNull(request.getCategoryId(), "Category ID must not be null");
+        Product product = Objects.requireNonNull(productMapper.toEntity(
                 request,
-                categoryRepository.findById(request.getCategoryId())
+                categoryRepository.findById(categoryId)
                         .orElseThrow(() ->
-                                new IllegalArgumentException("Category not found with id: " + request.getCategoryId()))
-        );
-        Product savedProduct = productRepository.save(product);
+                                new IllegalArgumentException("Category not found with id: " + categoryId))
+        ), "Mapped product must not be null");
+        Product savedProduct = Objects.requireNonNull(productRepository.save(Objects.requireNonNull(product)),
+                "Saved product must not be null");
         return productMapper.toDTO(savedProduct);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductDTO> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
+        Pageable safePageable = Objects.requireNonNull(pageable, "Pageable must not be null");
+        return productRepository.findAll(safePageable)
                 .map(productMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
     public ProductDTO getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+        Long productId = Objects.requireNonNull(id, "Product ID must not be null");
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
         return productMapper.toDTO(product);
     }
 
@@ -75,8 +80,9 @@ public class ProductService {
     }
 
     public ProductDTO updateStock(Long id, int delta) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+        Long productId = Objects.requireNonNull(id, "Product ID must not be null");
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
 
         int newStock = product.getStock() + delta;
         if (newStock < 0) {
@@ -84,7 +90,8 @@ public class ProductService {
         }
 
         product.setStock(newStock);
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = Objects.requireNonNull(productRepository.save(Objects.requireNonNull(product)),
+                "Saved product must not be null");
         return productMapper.toDTO(savedProduct);
     }
 }
