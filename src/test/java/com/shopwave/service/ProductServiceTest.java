@@ -4,6 +4,7 @@ package com.shopwave.service;
 
 import com.shopwave.dto.CreateProductRequest;
 import com.shopwave.dto.ProductDTO;
+import com.shopwave.exception.ProductNotFoundException;
 import com.shopwave.mapper.ProductMapper;
 import com.shopwave.model.Category;
 import com.shopwave.model.Product;
@@ -92,5 +93,14 @@ public class ProductServiceTest {
                 .hasMessage("Category not found with id: 99");
 
         verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
+    void getProductByIdShouldThrowProductNotFoundExceptionWhenMissing() {
+        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> productService.getProductById(999L))
+                .isInstanceOf(ProductNotFoundException.class)
+                .hasMessage("Product not found with id: 999");
     }
 }
