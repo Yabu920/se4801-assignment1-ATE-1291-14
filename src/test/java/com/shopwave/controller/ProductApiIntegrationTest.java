@@ -28,10 +28,10 @@ public class ProductApiIntegrationTest {
     void createProductShouldReturnCreatedWhenCategoryExists() throws Exception {
         String requestBody = """
                 {
-                  "name": "Mouse",
-                  "description": "Wireless mouse",
-                  "price": 45.99,
-                  "stock": 25,
+                  "name": "Vanilla Silk",
+                  "description": "Soft vanilla perfume",
+                  "price": 69.99,
+                  "stock": 18,
                   "categoryId": 1
                 }
                 """;
@@ -41,19 +41,19 @@ public class ProductApiIntegrationTest {
                         .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("Mouse"))
+                .andExpect(jsonPath("$.name").value("Vanilla Silk"))
                 .andExpect(jsonPath("$.categoryId").value(1))
-                .andExpect(jsonPath("$.categoryName").value("Electronics"));
+                .andExpect(jsonPath("$.categoryName").value("Perfumes"));
     }
 
     @Test
     void createProductShouldReturnBadRequestWhenCategoryDoesNotExist() throws Exception {
         String requestBody = """
                 {
-                  "name": "Mouse",
-                  "description": "Wireless mouse",
-                  "price": 45.99,
-                  "stock": 25,
+                  "name": "Vanilla Silk",
+                  "description": "Soft vanilla perfume",
+                  "price": 69.99,
+                  "stock": 18,
                   "categoryId": 999
                 }
                 """;
@@ -76,8 +76,8 @@ public class ProductApiIntegrationTest {
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(1))
-                .andExpect(jsonPath("$.content[0].name").value("Laptop"))
-                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Rose Bloom"))
+                .andExpect(jsonPath("$.totalElements").value(5))
                 .andExpect(jsonPath("$.number").value(0))
                 .andExpect(jsonPath("$.size").value(10));
     }
@@ -96,11 +96,11 @@ public class ProductApiIntegrationTest {
     @Test
     void searchProductsShouldReturnMatchingSeededProduct() throws Exception {
         mockMvc.perform(get("/api/products/search")
-                        .param("keyword", "lap")
-                        .param("maxPrice", "1500"))
+                        .param("keyword", "mist")
+                        .param("maxPrice", "70"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("Laptop"));
+                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[0].name").value("Ocean Mist"));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ProductApiIntegrationTest {
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.stock").value(15))
-                .andExpect(jsonPath("$.name").value("Laptop"));
+                .andExpect(jsonPath("$.stock").value(20))
+                .andExpect(jsonPath("$.name").value("Rose Bloom"));
     }
 }

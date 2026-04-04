@@ -42,17 +42,17 @@ public class ProductServiceTest {
     @Test
     void createProductShouldReturnProductDtoWhenCategoryExists() {
         CreateProductRequest request = CreateProductRequest.builder()
-                .name("Laptop")
-                .description("Lightweight laptop")
-                .price(new BigDecimal("1200.00"))
-                .stock(8)
+                .name("Rose Bloom")
+                .description("Floral perfume with rose notes")
+                .price(new BigDecimal("59.99"))
+                .stock(15)
                 .categoryId(1L)
                 .build();
 
         Category category = Category.builder()
                 .id(1L)
-                .name("Electronics")
-                .description("Electronic items")
+                .name("Perfumes")
+                .description("Perfume and fragrance products")
                 .build();
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
@@ -66,23 +66,23 @@ public class ProductServiceTest {
         ProductDTO result = productService.createProduct(request);
 
         assertThat(result.getId()).isEqualTo(10L);
-        assertThat(result.getName()).isEqualTo("Laptop");
+        assertThat(result.getName()).isEqualTo("Rose Bloom");
         assertThat(result.getCategoryId()).isEqualTo(1L);
-        assertThat(result.getCategoryName()).isEqualTo("Electronics");
+        assertThat(result.getCategoryName()).isEqualTo("Perfumes");
 
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository).save(productCaptor.capture());
         assertThat(productCaptor.getValue().getCategory()).isEqualTo(category);
-        assertThat(productCaptor.getValue().getStock()).isEqualTo(8);
+        assertThat(productCaptor.getValue().getStock()).isEqualTo(15);
     }
 
     @Test
     void createProductShouldThrowExceptionWhenCategoryDoesNotExist() {
         CreateProductRequest request = CreateProductRequest.builder()
-                .name("Laptop")
-                .description("Lightweight laptop")
-                .price(new BigDecimal("1200.00"))
-                .stock(8)
+                .name("Rose Bloom")
+                .description("Floral perfume with rose notes")
+                .price(new BigDecimal("59.99"))
+                .stock(15)
                 .categoryId(99L)
                 .build();
 

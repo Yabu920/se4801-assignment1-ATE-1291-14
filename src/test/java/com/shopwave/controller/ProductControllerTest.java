@@ -40,24 +40,24 @@ public class ProductControllerTest {
     void getAllProductsShouldReturnPaginatedProducts() throws Exception {
         ProductDTO product = ProductDTO.builder()
                 .id(1L)
-                .name("Laptop")
-                .description("Lightweight laptop")
-                .price(new BigDecimal("1200.00"))
-                .stock(8)
+                .name("Rose Bloom")
+                .description("Floral perfume with rose notes")
+                .price(new BigDecimal("59.99"))
+                .stock(15)
                 .categoryId(1L)
-                .categoryName("Electronics")
+                .categoryName("Perfumes")
                 .createdAt(LocalDateTime.of(2026, 3, 22, 12, 0))
                 .build();
 
         Page<ProductDTO> page = new PageImpl<>(List.of(product), PageRequest.of(0, 10), 1);
         when(productService.getAllProducts(any())).thenReturn(page);
 
-        mockMvc.perform(get("/api/products")
+                mockMvc.perform(get("/api/products")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(1))
-                .andExpect(jsonPath("$.content[0].name").value("Laptop"))
+                .andExpect(jsonPath("$.content[0].name").value("Rose Bloom"))
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.number").value(0))
                 .andExpect(jsonPath("$.size").value(10));

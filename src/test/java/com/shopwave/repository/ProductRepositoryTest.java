@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataJpaTest(properties = "spring.sql.init.mode=never")
 public class ProductRepositoryTest {
 
     @Autowired
@@ -26,37 +26,37 @@ public class ProductRepositoryTest {
     @Test
     void findByNameContainingIgnoreCaseShouldReturnCorrectResults() {
         Category category = Objects.requireNonNull(categoryRepository.save(Category.builder()
-                .name("Electronics")
-                .description("Electronic items")
+                .name("Perfumes")
+                .description("Perfume and fragrance products")
                 .build()));
 
         productRepository.save(Objects.requireNonNull(Product.builder()
-                .name("Laptop")
-                .description("Lightweight laptop")
-                .price(new BigDecimal("1200.00"))
-                .stock(8)
-                .category(category)
-                .build()));
-
-        productRepository.save(Objects.requireNonNull(Product.builder()
-                .name("Phone")
-                .description("Smart phone")
-                .price(new BigDecimal("800.00"))
+                .name("Rose Bloom")
+                .description("Floral perfume with rose notes")
+                .price(new BigDecimal("59.99"))
                 .stock(15)
                 .category(category)
                 .build()));
 
         productRepository.save(Objects.requireNonNull(Product.builder()
-                .name("Desk")
-                .description("Wooden desk")
-                .price(new BigDecimal("300.00"))
-                .stock(4)
+                .name("Ocean Mist")
+                .description("Fresh aquatic perfume")
+                .price(new BigDecimal("64.99"))
+                .stock(12)
                 .category(category)
                 .build()));
 
-        List<Product> results = productRepository.findByNameContainingIgnoreCase("pho");
+        productRepository.save(Objects.requireNonNull(Product.builder()
+                .name("Velvet Oud")
+                .description("Warm woody oud fragrance")
+                .price(new BigDecimal("89.99"))
+                .stock(8)
+                .category(category)
+                .build()));
+
+        List<Product> results = productRepository.findByNameContainingIgnoreCase("mist");
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).getName()).isEqualTo("Phone");
+        assertThat(results.get(0).getName()).isEqualTo("Ocean Mist");
     }
 }
